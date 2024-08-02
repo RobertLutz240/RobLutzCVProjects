@@ -1,0 +1,50 @@
+import cv2
+print(cv2.__version__)
+width=1280
+height=720
+cam=cv2.VideoCapture(0,cv2.CAP_DSHOW)
+cam.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+cam.set(cv2.CAP_PROP_FRAME_WIDTH, width)
+cam.set(cv2.CAP_PROP_FPS, 30)
+cam.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*'MJPG'))
+
+R1=int(height*0.0)
+R2=int(height*0.25)
+C1=int(width*0.0)
+C2=int(width*0.25)
+
+posX1=R1
+posx2=R2
+posy1=C1
+posy2=C2
+slopeX=1
+slopeY=1
+while True:
+    ignore, frame = cam.read() 
+    #make a grey frame
+    greyFrame=cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    # convert the grey frame to a colored array
+    Grey2Colored=cv2.cvtColor(greyFrame,cv2.COLOR_GRAY2BGR)
+    #make a colored frame
+    coloredFrame=frame
+    #make a colored subset of the main frame
+    subsetColorFrame=coloredFrame[posX1:posx2,posy1:posy2] 
+    #start the box in the upper left corner
+    Grey2Colored[posX1:posx2,posy1:posy2]=subsetColorFrame
+    #move the box using a glide slope of 1/2, flip the fraction any time it reaches the edge of the screen
+    posX1=posX1+slopeX
+    posx2=posx2+slopeX
+    posy1=posy1+slopeY
+    posy2=posy2+slopeY
+
+    if posX1 <= 0 or posX1 >= height or posx2 <= 0 or posx2 >= height:
+        slopeX=slopeX*-1
+    if posy1 <= 0 or posy1 >= width or posy2 <= 0 or posy2 >= width:
+        slopeY=slopeY*-1
+
+    cv2.imshow('my WEBcam', Grey2Colored)
+    cv2.moveWindow('my WEBcam', 0,0) 
+
+    if cv2.waitKey(1) & 0xff == ord('q'):
+        break
+cam.release()

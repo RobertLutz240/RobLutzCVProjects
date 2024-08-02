@@ -1,0 +1,33 @@
+import cv2
+print(cv2.__version__)
+import mediapipe as mp
+width=1280
+height=720
+cam=cv2.VideoCapture(0,cv2.CAP_DSHOW)
+cam.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+cam.set(cv2.CAP_PROP_FRAME_WIDTH, width)
+cam.set(cv2.CAP_PROP_FPS, 30)
+cam.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*'MJPG'))
+
+
+hands=mp.solutions.hands.Hands(False,2,int(.5),int(.5)) #create an object that does hand detection and hand analyis (solutions.hands is a method. hands is a variable)
+#mp.solutions.hands.Hands(isStillImage,number of hands, confidence interval, confidence interval 2)
+mpDraw=mp.solutions.drawing_utils #object for drawing the frame.
+while True:
+    ignore, frame = cam.read()
+    frameRGB=cv2.cvtColor(frame,cv2.COLOR_BGR2RGB)
+    results=hands.process(frameRGB) #results is the hands variable+process(frameRBG)
+    if results.multi_hand_landmarks != None:
+        for handLandMarks in results.multi_hand_landmarks:
+            myHand=[]
+            mpDraw.draw_landmarks(frame,handLandMarks,mp.solutions.hands.HAND_CONNECTIONS)
+            for Landmark in handLandMarks.landmark:
+                myHand.append((int(Landmark.x*width),int(Landmark.y*height)))
+                print(myHand)
+            cv2.circle(frame,myHand[20],25,(255,0,255),-1)
+            myHand.append(myHand)
+    cv2.imshow('my WEBcam', frame)
+    cv2.moveWindow('my WEBcam', 0,0)
+    if cv2.waitKey(1) & 0xff == ord('q'):
+        break
+cam.release()
