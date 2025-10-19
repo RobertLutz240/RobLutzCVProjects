@@ -1,1 +1,5 @@
-Files for meshroom
+These python files represent an attempt to pre-process images that I was feeding into Meshroom for photogrammerty.
+The specific goal of this code was to address the difficulty that photogrammetric software has in rendering shiny/reflective objects (such as a pair of sunglasses).
+I tried initially converting the image into a Canny image, but the lines are thick and can create ambiguous overlaps.
+I next tried captiruing the phase FFT of the image, but this could create really dark images where the lines were too faint and details were lost.
+I ultimately created a complimentary pre-process which combines a 10% Canny image with a 90% phaseFFT image. The end result was not an improvement over just using regular pictures.
