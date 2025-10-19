@@ -1,1 +1,3 @@
+To run the code in the openCV tutorial you will need to PIP install cmake, CV2, dlib. 
 
+The code expects a USB webcam on a port 0. Depending on the peripherals of your machine, you may need to change that number to something else like 1, 2, 3, etc. 
